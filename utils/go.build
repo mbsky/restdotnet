@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!-- vim:set tabstop=4 shiftwidth=4: -->
+<project name="ComptrollerGrants" default="build-release" basedir="../code/">
+	<description>Build a library for use in REST applications</description>
+	<property name="debug" value="true"/>
+	<property name="dir.source" value="../code"/>
+	<property name="dir.bin" value="../dist"/>
+	<property name="dir.refs" value="../dep"/>
+	<property name="dir.test" value="${dir.bin}"/>
+	<property name="dir.nunit" value="c:/program files/nunit"/>
+
+	<target name="build-ccnet">
+		<property name="debug" value="true"/>
+		<call target="clean"/>
+		<call target="test"/>
+	</target>
+
+	<target name="build-release">
+		<property name="debug" value="false"/>
+		<call target="buildFromClean"/>
+	</target>
+
+	<target name="buildFromClean">
+		<call target="clean"/>
+		<call target="build"/>
+	</target>
+
+	<target name="clean">
+		<delete>
+			<fileset>
+				<include name="${dir.bin}/*.*"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="build" description="compiles the rest.dll">
+		<if test="${
+(
+	not(
+		file::exists( dir.bin + '/Rest.dll' )
+	)
+) or (
+	file::up-to-date(
+		dir.bin + '/Rest.dll',
+		dir.source + '/Rest.cs'
+	)
+)
+		}">
+			<csc target="library" output="${dir.bin}/Rest.dll" debug="${debug}">
+				<sources>
+					<include name="${dir.source}/Rest.cs"/>
+				</sources>
+			</csc>
+		</if>
+	</target>
+</project>
